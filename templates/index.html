@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/style.css') }}">
+    <title>Text Classification</title>
+</head>
+<body>
+    <h1>Text Classification</h1>
+    <form id="classification-form">
+        <label for="text-input">Enter text:</label>
+        <input type="text" id="text-input" name="text" required>
+        <button type="submit">Classify</button>
+    </form>
+    <div id="result"></div>
+
+    <script>
+        const form = document.getElementById('classification-form');
+        const resultDiv = document.getElementById('result');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const text = document.getElementById('text-input').value;
+            const response = await fetch(`/api/classify?text=${encodeURIComponent(text)}`);
+            const data = await response.json();
+            const predictedLabels = data.predicted_labels;
+
+            if (predictedLabels.length > 0) {
+                resultDiv.innerHTML = `<p>Predicted Labels: ${predictedLabels.join(', ')}</p>`;
+            } else {
+                resultDiv.innerHTML = `<p>Predicted Labels: None</p>`;
+            }
+        });
+    </script>
+</body>
+</html>
